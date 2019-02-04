@@ -5,3 +5,5 @@ RUN apk add --no-cache bash git
 RUN npm config set save true && \
 	npm config set save-exact true &&\
 	npm i -g yarn
+
+ENV HOST 0.0.0.0
