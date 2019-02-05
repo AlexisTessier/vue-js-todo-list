@@ -1,34 +1,27 @@
 <template>
   <div>
-    <v-toolbar flat>
-      <v-toolbar-title>Todos</v-toolbar-title>      
-    </v-toolbar>
+    <tool-bar
+      title="Todos"
+    />
     <v-content>
       <v-container>
+        <v-btn
+          block
+          light
+        >
+          Add new todo
+        </v-btn>
         <v-progress-circular
+          v-if="loading"
           indeterminate
         />
-        <v-btn block light>Add new todo</v-btn>
-        <v-expansion-panel>
-          <v-expansion-panel-content>
-            <div slot="header">
-              hello
+        <v-list v-else>
+          <template v-for="(task, index) in tasks">
+            <div :key="index">
+              hello world {{ task.description }} {{ index }}
             </div>
-            hello world
-          </v-expansion-panel-content>
-          <v-expansion-panel-content>
-            <div slot="header">
-              hello
-            </div>
-            hello world
-          </v-expansion-panel-content>
-          <v-expansion-panel-content>
-            <div slot="header">
-              hello
-            </div>
-            hello world
-          </v-expansion-panel-content>
-        </v-expansion-panel>
+          </template>
+        </v-list>
       </v-container>
 
       <v-tooltip left>
@@ -42,10 +35,21 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import ToolBar from '~/components/ToolBar.vue'
+
 export default {
-  components: {},
-  data() {
-    return {}
+  components: {
+    ToolBar
+  },
+  computed: {
+    ...mapState({
+      loading: state => state.todos.loading,
+      tasks: state => state.todos.tasks
+    })
+  },
+  fetch({ store }) {
+    store.dispatch('todos/loadTasks')
   }
 }
 </script>
