@@ -1,15 +1,13 @@
 <template>
   <div>
-    <tool-bar
-      title="Todos"
-    />
+    <tool-bar :title="title" />
     <v-content>
       <v-container>
         <v-btn
           block
           light
         >
-          Add new todo {{ tasks.length }}
+          Add new todo
         </v-btn>
         <v-progress-circular
           v-if="loading"
@@ -25,7 +23,7 @@
       </v-container>
 
       <v-tooltip left>
-        <v-btn slot="activator" icon>
+        <v-btn slot="activator" icon >
           <v-icon>add</v-icon>
         </v-btn>
         <span>Add new todo</span>
@@ -45,11 +43,17 @@ export default {
   computed: {
     ...mapState({
       loading: state => state.todos.loading,
+      loadingError: state => state.todos.loadingError,
       tasks: state => state.todos.tasks
-    })
+    }),
+    title() {
+      return `Todos (${this.tasks.length})`
+    }
   },
-  fetch({ store }) {
-    store.dispatch('todos/loadTasks')
+  async fetch({ store }) {
+    const apiOrigin = store.state.api.origin
+
+    await store.dispatch('todos/loadTasks', apiOrigin)
   }
 }
 </script>

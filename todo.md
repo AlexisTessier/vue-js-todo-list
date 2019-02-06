@@ -1,6 +1,7 @@
 ## functional requirements
 
-+ list all tasks
++ list all tasks OK
++ nice display
 + add a task
 + edit a task
 + set a task a done
@@ -11,12 +12,13 @@
 ## technical requirements
 
 + nuxt OK
-+ mapGetters
-+ mutations
-+ actions
-+ async fetch
-+ vuex
-+ vuetify
++ mapGetters (mapState but OK)
++ mutations OK
++ actions OK
++ async fetch OK
++ vuex OK 
++ vuetify OK
++ add tests
 + git history
 + build et deploy
 + send it
@@ -25,7 +27,7 @@
 
 api mock : https://jsonplaceholder.typicode.com/
 
-- /todos GET
+- /todos GET OK
 - /todos POST
 - /todos/{id} GET
 - /todos/{id} PUT

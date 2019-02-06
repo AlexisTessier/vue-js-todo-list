@@ -1,6 +1,7 @@
 export function state() {
   return {
     loading: false,
+    loadingError: null,
     tasks: []
   }
 }
@@ -8,6 +9,7 @@ export function state() {
 export const mutations = {
   startLoadingTasks(state) {
     state.tasks = []
+    state.loadingError = null
     state.loading = true
   },
   addTask(state, task) {
@@ -15,7 +17,12 @@ export const mutations = {
   },
   setTasks(state, tasks) {
     state.tasks = tasks
+    state.loadingError = null
     state.loading = false
+  },
+  setLoadingError(state, error) {
+    state.loading = false
+    state.loadingError = error
   }
 }
 
@@ -28,11 +35,17 @@ export const actions = {
     }
     commit('addTask', task)
   },
-  async loadTasks({ commit, rootState }) {
+  async loadTasks({ commit }, apiOrigin) {
     commit('startLoadingTasks')
 
-    const todos = await this.$axios.$get(`${rootState.api.origin}/todos`)
-
-    commit('setTasks', todos)
+    try {
+      const todos = await this.$axios.$get(`${apiOrigin}/todos`)
+      commit('setTasks', todos)
+    } catch (err) {
+      commit(
+        'setLoadingError',
+        'Something went wrong while loading todos tasks. Please refresh the page :/'
+      )
+    }
   }
 }
