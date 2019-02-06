@@ -28,7 +28,11 @@ export const actions = {
     }
     commit('addTask', task)
   },
-  loadTasks({ commit }) {
+  async loadTasks({ commit, rootState }) {
     commit('startLoadingTasks')
+
+    const todos = await this.$axios.$get(`${rootState.api.origin}/todos`)
+
+    commit('setTasks', todos)
   }
 }

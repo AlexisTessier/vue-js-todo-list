@@ -27,6 +27,6 @@ dev:
 
 dev_shell:
 	docker run -it --rm \
-		-v ${DEV_DIRECTORY}:/root/dev \
+		-v ${VOLUME_NAME}:/root/dev \
 		-w /root/dev/${PROJECT_DIRECTORY} \
 		${DEV_IMAGE_TAG} /bin/bash

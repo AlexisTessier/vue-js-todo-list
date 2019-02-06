@@ -9,7 +9,7 @@
           block
           light
         >
-          Add new todo
+          Add new todo {{ tasks.length }}
         </v-btn>
         <v-progress-circular
           v-if="loading"
@@ -18,7 +18,7 @@
         <v-list v-else>
           <template v-for="(task, index) in tasks">
             <div :key="index">
-              hello world {{ task.description }} {{ index }}
+              hello world {{ task.title }} {{ index }}
             </div>
           </template>
         </v-list>
