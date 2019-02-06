@@ -21,9 +21,8 @@
           </template>
         </v-list>
       </v-container>
-
       <v-tooltip left>
-        <v-btn slot="activator" icon >
+        <v-btn slot="activator" icon>
           <v-icon>add</v-icon>
         </v-btn>
         <span>Add new todo</span>
