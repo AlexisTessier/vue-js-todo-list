@@ -2,11 +2,12 @@
 
 + list all tasks OK
 + nice display OK
-+ set a task as done WIP
++ set a task as done OK
 + add a task
 + edit a task
-+ order tasks
 + remove a task
++ filter by title
++ filter by status
 + see a task in full page
 
 ## technical requirements

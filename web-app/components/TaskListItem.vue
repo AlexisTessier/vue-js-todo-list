@@ -10,6 +10,9 @@
       indeterminate
       class="loader"
     />
+    <div v-if="updatingError" class="error--text">
+      {{ updatingError }}
+    </div>
     <v-checkbox
       v-model="completedModel"
       :disabled="updating"
@@ -42,8 +45,13 @@
   width: 4em;
 }
 
-.loader {
+.loader,
+.error--text {
   margin-right: 12px;
+}
+
+.error--text {
+  font-size: 0.8em;
 }
 </style>
 
@@ -61,6 +69,11 @@ export default {
     updating: {
       type: Boolean,
       required: true
+    },
+    updatingError: {
+      type: String,
+      required: false,
+      default: null
     },
     onTaskUpdate: {
       type: Function,

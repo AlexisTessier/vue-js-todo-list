@@ -17,6 +17,7 @@
             :title="item.title"
             :completed="item.completed"
             :updating="item.updating"
+            :updating-error="item.updatingError"
             :on-task-update="item.onTaskUpdate"
           />
         </v-list-tile-content>
