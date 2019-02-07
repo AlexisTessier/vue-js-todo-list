@@ -3,30 +3,20 @@
     <tool-bar :title="title" />
     <v-content>
       <v-container>
-        <v-btn
-          block
-          light
-        >
-          Add new todo
-        </v-btn>
+        <block-button :color="addButtonColor" :label="addTaskLabel" />
         <v-progress-circular
           v-if="loading"
           indeterminate
         />
-        <v-list v-else>
-          <template v-for="(task, index) in tasks">
-            <div :key="index">
-              hello world {{ task.title }} {{ index }}
-            </div>
-          </template>
-        </v-list>
+        <v-alert :value="loadingError" type="error">
+          {{ loadingError }}
+        </v-alert>
+        <tasks-list
+          v-if="displayTasks"
+          :tasks="tasks"
+        />
       </v-container>
-      <v-tooltip left>
-        <v-btn slot="activator" icon>
-          <v-icon>add</v-icon>
-        </v-btn>
-        <span>Add new todo</span>
-      </v-tooltip>
+      <float-button :color="addButtonColor" icon="add" :tooltip="addTaskLabel" />
     </v-content>
   </div>
 </template>
@@ -34,10 +24,25 @@
 <script>
 import { mapState } from 'vuex'
 import ToolBar from '~/components/ToolBar.vue'
+import TasksList from '~/components/TasksList.vue'
+import FloatButton from '~/components/FloatButton.vue'
+import BlockButton from '~/components/BlockButton.vue'
+
+const addButtonColor = 'blue'
+const addTaskLabel = 'Add new task'
 
 export default {
   components: {
-    ToolBar
+    ToolBar,
+    TasksList,
+    FloatButton,
+    BlockButton
+  },
+  data() {
+    return {
+      addButtonColor,
+      addTaskLabel
+    }
   },
   computed: {
     ...mapState({
@@ -47,6 +52,9 @@ export default {
     }),
     title() {
       return `Todos (${this.tasks.length})`
+    },
+    displayTasks() {
+      return this.tasks.length > 0 && !this.loading && !this.loadingError
     }
   },
   async fetch({ store }) {
