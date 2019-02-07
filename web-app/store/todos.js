@@ -12,11 +12,19 @@ export const mutations = {
     state.loadingError = null
     state.loading = true
   },
+  startUpdatingTask(state, taskId) {
+    state.tasks.filter(task => task.id === taskId).forEach(task => {
+      task.updating = true
+    })
+  },
   addTask(state, task) {
     state.tasks.push(task)
   },
   setTasks(state, tasks) {
-    state.tasks = tasks
+    state.tasks = tasks.map(task => ({
+      ...task,
+      updating: false
+    }))
     state.loadingError = null
     state.loading = false
   },
@@ -27,7 +35,7 @@ export const mutations = {
 }
 
 export const actions = {
-  addTask({ commit }, description) {
+  addTask({ commit }, { description }) {
     const task = {
       id: undefined,
       description,
@@ -35,7 +43,10 @@ export const actions = {
     }
     commit('addTask', task)
   },
-  async loadTasks({ commit }, apiOrigin) {
+  updateTask({ commit }, { apiOrigin, taskId, update }) {
+    commit('startUpdatingTask', taskId)
+  },
+  async loadTasks({ commit }, { apiOrigin }) {
     commit('startLoadingTasks')
 
     try {

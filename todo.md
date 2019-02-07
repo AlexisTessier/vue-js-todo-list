@@ -1,10 +1,10 @@
 ## functional requirements
 
 + list all tasks OK
-+ nice display
++ nice display OK
++ set a task as done WIP
 + add a task
 + edit a task
-+ set a task a done
 + order tasks
 + remove a task
 + see a task in full page
@@ -16,7 +16,7 @@
 + mutations OK
 + actions OK
 + async fetch OK
-+ vuex OK 
++ vuex OK
 + vuetify OK
 + add tests
 + git history

@@ -14,6 +14,7 @@
         <tasks-list
           v-if="displayTasks"
           :tasks="tasks"
+          :on-task-update="onTaskUpdate"
         />
       </v-container>
       <float-button :color="addButtonColor" icon="add" :tooltip="addTaskLabel" />
@@ -30,6 +31,10 @@ import BlockButton from '~/components/BlockButton.vue'
 
 const addButtonColor = 'blue'
 const addTaskLabel = 'Add new task'
+
+function apiOrigin(store) {
+  return store.state.api.origin
+}
 
 export default {
   components: {
@@ -57,10 +62,20 @@ export default {
       return this.tasks.length > 0 && !this.loading && !this.loadingError
     }
   },
+  methods: {
+    onTaskUpdate(taskId, update) {
+      const store = this.$store
+      store.dispatch('todos/updateTask', {
+        apiOrigin: apiOrigin(store),
+        taskId,
+        update
+      })
+    }
+  },
   async fetch({ store }) {
-    const apiOrigin = store.state.api.origin
-
-    await store.dispatch('todos/loadTasks', apiOrigin)
+    await store.dispatch('todos/loadTasks', {
+      apiOrigin: apiOrigin(store)
+    })
   }
 }
 </script>
