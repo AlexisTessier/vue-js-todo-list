@@ -11,7 +11,11 @@
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint",
-    "test": "ava"
+    "test": "npm run test:coverage",
+    "test:unit": "ava",
+    "test:watch": "ava --watch",
+    "test:coverage": "nyc -a ava && npm run report",
+    "report": "nyc -a report --reporter=html --reporter=lcov"
   },
   "dependencies": {
     "@nuxtjs/axios": "5.3.6",
@@ -40,11 +44,25 @@
     "eslint-plugin-standard": ">=4.0.0",
     "eslint-plugin-vue": "^5.0.0",
     "nodemon": "^1.18.9",
+    "nyc": "13.2.0",
     "prettier": "1.14.3",
     "require-extension-hooks": "^0.3.3",
     "require-extension-hooks-babel": "^0.1.1",
     "require-extension-hooks-vue": "^2.0.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2"
+  },
+  "nyc": {
+    "include": [
+      "**/*.js"
+    ],
+    "exclude": [
+      "*.config.js",
+      "plugins/**/*.js",
+      "server/**/*.js",
+      "coverage/**/*.js",
+      "test/**/*.js",
+      "**/node_modules/*"
+    ]
   }
 }
