@@ -19,7 +19,7 @@
 + async fetch OK
 + vuex OK
 + vuetify OK
-+ add tests
++ add tests WIP
 + git history
 + build et deploy
 + send it
@@ -31,5 +31,5 @@ api mock : https://jsonplaceholder.typicode.com/
 - /todos GET OK
 - /todos POST
 - /todos/{id} GET
-- /todos/{id} PUT
+- /todos/{id} PUT (PATCH BUT OK)
 - /todos/{id} DELETE

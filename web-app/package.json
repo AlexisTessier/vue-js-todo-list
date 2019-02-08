@@ -14,8 +14,8 @@
     "test": "npm run test:coverage",
     "test:unit": "ava",
     "test:watch": "ava --watch",
-    "test:coverage": "nyc -a ava && npm run report",
-    "report": "nyc -a report --reporter=html --reporter=lcov"
+    "test:coverage": "nyc ava && npm run report",
+    "report": "nyc report --reporter=html --reporter=lcov"
   },
   "dependencies": {
     "@nuxtjs/axios": "5.3.6",
@@ -63,6 +63,11 @@
       "coverage/**/*.js",
       "test/**/*.js",
       "**/node_modules/*"
-    ]
+    ],
+    "extension": [
+      ".js"
+    ],
+    "instrument": true,
+    "all": true
   }
 }
