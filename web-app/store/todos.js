@@ -79,12 +79,12 @@ export const actions = {
     commit('startUpdatingTask', { taskId, expectedUpdate: update })
 
     try {
-      const updated = await this.$axios.patch(
+      const updated = await this.$axios.$patch(
         `${apiOrigin}/todos/${taskId}`,
         update
       )
       commit('updateTask', {
-        task: updated.data
+        task: updated
       })
     } catch (err) {
       commit('setUpdatingError', {

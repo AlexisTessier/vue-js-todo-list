@@ -12,14 +12,6 @@
 
 ## technical requirements
 
-+ nuxt OK
-+ mapGetters (mapState but OK)
-+ mutations OK
-+ actions OK
-+ async fetch OK
-+ vuex OK
-+ vuetify OK
-+ add tests WIP
 + git history
 + build et deploy
 + send it

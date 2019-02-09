@@ -1,15 +1,13 @@
-import test from 'ava'
-
 import { state } from '../../../store/api'
 
-test('is a function', t => {
-  t.true(typeof state === 'function')
+test('is a function', () => {
+  expect(typeof state === 'function').toBe(true)
 })
 
-test('return a valid initial state', t => {
+test('return a valid initial state', () => {
   const initialState = state()
 
-  t.deepEqual(Object.keys(initialState), ['origin'])
-  t.true(typeof initialState.origin === 'string')
-  t.snapshot(initialState.origin)
+  expect(Object.keys(initialState)).toEqual(['origin'])
+  expect(typeof initialState.origin === 'string').toBe(true)
+  expect(initialState.origin).toMatchSnapshot()
 })
