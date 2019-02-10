@@ -3,7 +3,12 @@
     <tool-bar :title="title" />
     <v-content>
       <v-container>
-        <block-button :color="addButtonColor" :label="addTaskLabel" />
+        <block-button
+          :color="addButtonColor"
+          :label="addTaskLabel"
+          :disabled="!addTaskEnabled"
+          @btn-click="addTask"
+        />
         <v-progress-circular
           v-if="loading"
           indeterminate
@@ -12,12 +17,22 @@
           {{ loadingError }}
         </v-alert>
         <tasks-list
+          v-if="newTask"
+          :tasks="[newTask]"
+        />
+        <tasks-list
           v-if="displayTasks"
           :tasks="tasks"
-          :on-task-update="onTaskUpdate"
+          @task-update="onTaskUpdate($event)"
         />
       </v-container>
-      <float-button :color="addButtonColor" icon="add" :tooltip="addTaskLabel" />
+      <float-button
+        :color="addButtonColor"
+        icon="add"
+        :tooltip="addTaskLabel"
+        :disabled="!addTaskEnabled"
+        @btn-click="addTask"
+      />
     </v-content>
   </div>
 </template>
@@ -59,16 +74,29 @@ export default {
     ...mapState({
       loading: state => state.todos.loading,
       loadingError: state => state.todos.loadingError,
+      newTask: state => state.todos.newTask,
       tasks: state => state.todos.tasks
     }),
     title() {
       return `Todos (${this.tasks.length})`
     },
     displayTasks() {
-      return this.tasks.length > 0 && !this.loading && !this.loadingError
+      return this.tasks.length > 0 && !this.loading
+    },
+    addTaskEnabled() {
+      return this.newTask === null
     }
   },
   methods: {
+    addTask() {
+      window.scrollTo(0, 0)
+      if (this.addTaskEnabled) {
+        const store = this.$store
+        store.dispatch('todos/addTask', {
+          apiOrigin: apiOrigin(store)
+        })
+      }
+    },
     immediateUpdateTask(store, taskId, update) {
       this.lastTaskUpdate = {
         taskId: null,
@@ -80,7 +108,7 @@ export default {
         update
       })
     },
-    onTaskUpdate(taskId, update) {
+    onTaskUpdate({ taskId, update }) {
       if (this.debouncedUpdateTask === null) {
         this.debouncedUpdateTask = debounce(
           (immediateUpdateTask, store, taskId, update) => {

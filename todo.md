@@ -4,11 +4,8 @@
 + nice display OK
 + set a task as done OK
 + edit a task OK
-+ add a task
++ add a task OK
 + remove a task
-+ filter by title
-+ filter by status
-+ see a task in full page
 
 ## technical requirements
 
