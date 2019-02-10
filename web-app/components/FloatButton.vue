@@ -1,7 +1,13 @@
 <template>
   <div class="float-button">
     <v-tooltip left>
-      <v-btn slot="activator" icon :color="color">
+      <v-btn
+        slot="activator"
+        icon
+        :color="color"
+        :disabled="disabled"
+        @click="$emit('btn-click')"
+      >
         <v-icon>{{ icon }}</v-icon>
       </v-btn>
       <span>{{ tooltip }}</span> 
@@ -31,6 +37,11 @@ export default {
     color: {
       type: String,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   }
 }

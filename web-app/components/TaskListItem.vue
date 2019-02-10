@@ -5,9 +5,11 @@
         @submit.prevent="disableFocus()"
       >
         <v-text-field
+          ref="titleInputRef"
           v-model="editedTitle"
           :counter="editedTitleCounter"
           :label="editedTitleLabel"
+          :disabled="!editable"
           @blur.prevent="disableEditMode()"
           @focus.prevent="enableEditMode()"
         />
@@ -80,6 +82,10 @@
 <script>
 export default {
   props: {
+    editable: {
+      type: Boolean,
+      required: true
+    },
     title: {
       type: String,
       required: true
@@ -97,9 +103,10 @@ export default {
       required: false,
       default: null
     },
-    onTaskUpdate: {
-      type: Function,
-      required: true
+    autofocus: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data() {
@@ -119,7 +126,7 @@ export default {
         return this.completed
       },
       set(value) {
-        this.onTaskUpdate({
+        this.$emit('task-update', {
           completed: value
         })
       }
@@ -129,7 +136,7 @@ export default {
         return this.title
       },
       set(value) {
-        this.onTaskUpdate({
+        this.$emit('task-update', {
           title: value
         })
       }
@@ -139,6 +146,16 @@ export default {
     },
     editedTitleLabel() {
       return this.editingTitle ? 'Task title' : undefined
+    }
+  },
+  watch: {
+    autofocus(focus) {
+      if (focus) {
+        const input = this.$refs.titleInputRef.$el.querySelector('input')
+        if (input && typeof input.focus === 'function') {
+          input.focus()
+        }
+      }
     }
   },
   methods: {

@@ -6,6 +6,7 @@ test('get a valid initial state', () => {
   expect(initialState).toEqual({
     loading: false,
     loadingError: null,
+    newTask: null,
     tasks: []
   })
 })
@@ -37,7 +38,7 @@ test('setLoadingError mutation', () => {
   expect(state).toEqual({
     loading: false,
     loadingError: 'error message',
-    tasks: [{ ...aTask }]
+    tasks: []
   })
 })
 
@@ -70,12 +71,16 @@ test('setTasks mutation', () => {
   })
 })
 
-test('addTask mutation', () => {
-  const tasks = []
+test('startAddingTask mutation', () => {
+  const state = {}
 
-  mutations.addTask({ tasks }, { task: 'a task' })
+  mutations.startAddingTask(state, { task: 'a task' })
 
-  expect(tasks).toEqual(['a task'])
+  expect(state).toEqual({
+    loading: false,
+    loadingError: null,
+    newTask: 'a task'
+  })
 })
 
 test('startUpdatingTask mutation', () => {
@@ -233,8 +238,8 @@ test('updateTask mutation', () => {
   const state = { tasks }
 
   mutations.updateTask(state, {
+    taskId: 43,
     task: {
-      id: 43,
       title: 'new title',
       completed: true
     }
@@ -250,6 +255,7 @@ test('updateTask mutation', () => {
         completed: false
       },
       {
+        autofocus: false,
         id: 43,
         updating: false,
         updatingError: null,
@@ -442,6 +448,7 @@ describe('updateTask action', () => {
     return updateTaskPromise.then(() => {
       expect(store.commit).toHaveBeenCalledTimes(2)
       expect(store.commit).toHaveBeenCalledWith('updateTask', {
+        taskId: 43,
         task: { taskKey: 'task value' }
       })
       expect(context.$axios.$patch).toHaveBeenCalledTimes(1)

@@ -1,16 +1,18 @@
 <template>
   <v-list class="list">
-    <template v-for="(item, index) in items">
-      <div :key="index">
+    <template v-for="item in items">
+      <div :key="item.id">
         <v-divider class="divider" />
         <v-list-tile class="item">
           <v-list-tile-content class="item-content">
             <task-list-item
-              :title="item.content.title"
-              :completed="item.content.completed"
-              :updating="item.content.updating"
-              :updating-error="item.content.updatingError"
-              :on-task-update="item.onTaskUpdate"
+              :title="item.task.title"
+              :editable="item.editable"
+              :completed="item.task.completed"
+              :updating="item.task.updating"
+              :autofocus="item.task.autofocus"
+              :updating-error="item.task.updatingError"
+              @task-update="taskUpdate(item.task.id, $event)"
             />
           </v-list-tile-content>
         </v-list-tile>
@@ -49,10 +51,6 @@ export default {
     tasks: {
       type: Array,
       required: true
-    },
-    onTaskUpdate: {
-      type: Function,
-      required: true
     }
   },
   computed: {
@@ -60,11 +58,14 @@ export default {
       const list = this
       return list.tasks.map((task, i) => ({
         divider: i > 0,
-        onTaskUpdate(update) {
-          list.onTaskUpdate(task.id, update)
-        },
-        content: task
+        task,
+        editable: typeof task.id === 'number'
       }))
+    }
+  },
+  methods: {
+    taskUpdate(taskId, update) {
+      this.$emit('task-update', { taskId, update })
     }
   }
 }

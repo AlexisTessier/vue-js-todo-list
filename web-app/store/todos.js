@@ -2,6 +2,7 @@ export function state() {
   return {
     loading: false,
     loadingError: null,
+    newTask: null,
     tasks: []
   }
 }
@@ -24,12 +25,31 @@ export const mutations = {
       }
     })
   },
-  updateTask(state, { task }) {
-    state.tasks.filter(t => t.id === task.id).forEach(t => {
+  startAddingTask(state, { task }) {
+    state.loadingError = null
+    state.loading = false
+    state.newTask = task
+  },
+  addingTaskConfirmation(state, { task }) {
+    state.tasks.unshift({
+      ...task,
+      autofocus: true,
+      updating: false,
+      updatingError: null
+    })
+    state.newTask = null
+  },
+  updateTask(state, { taskId, task }) {
+    state.tasks.filter(t => t.id === taskId).forEach(t => {
       t.updating = false
       t.updatingError = null
-      t.completed = task.completed
-      t.title = task.title
+      t.autofocus = false
+      if ('title' in task) {
+        t.title = task.title
+      }
+      if ('completed' in task) {
+        t.completed = task.completed
+      }
     })
   },
   setUpdatingError(state, { taskId, error, initialTaskState }) {
@@ -39,9 +59,6 @@ export const mutations = {
       task.title = initialTaskState.title
       task.completed = initialTaskState.completed
     })
-  },
-  addTask(state, { task }) {
-    state.tasks.push(task)
   },
   setTasks(state, { tasks }) {
     state.tasks = tasks.map(task => ({
@@ -55,19 +72,40 @@ export const mutations = {
   setLoadingError(state, { error }) {
     state.loading = false
     state.loadingError = error
+    state.tasks = []
+  },
+  setAddingError(state, { task, error }) {
+    state.loading = false
+    state.loadingError = error
+    state.tasks = state.tasks.filter(t => !Object.is(t, task))
   }
 }
 
 export const actions = {
-  addTask({ commit }, { title }) {
+  async addTask({ commit }, { apiOrigin }) {
     const task = {
       id: undefined,
-      title,
-      done: false,
+      title: '',
+      completed: false,
       updating: true,
       updatingError: null
     }
-    commit('addTask', { task })
+    commit('startAddingTask', { task })
+
+    try {
+      const added = await this.$axios.$post(`${apiOrigin}/todos`, {
+        title: task.title,
+        completed: task.completed
+      })
+
+      commit('addingTaskConfirmation', { task: added })
+    } catch (err) {
+      commit('setAddingError', {
+        task,
+        error:
+          'Something went wrong while adding a new task. Please try again :/'
+      })
+    }
   },
   async updateTask({ commit, state }, { apiOrigin, taskId, update }) {
     const targetedTask = state.tasks.find(task => task.id === taskId)
@@ -84,6 +122,7 @@ export const actions = {
         update
       )
       commit('updateTask', {
+        taskId,
         task: updated
       })
     } catch (err) {

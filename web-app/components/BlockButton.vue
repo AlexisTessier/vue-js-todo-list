@@ -2,6 +2,8 @@
   <v-btn
     block
     :color="color"
+    :disabled="disabled"
+    @click="$emit('btn-click')"
   >
     {{ label }}
   </v-btn>
@@ -17,6 +19,11 @@ export default {
     color: {
       type: String,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   }
 }
