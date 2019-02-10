@@ -342,7 +342,16 @@ describe('loadTasks action', () => {
     const context = {
       $axios: {
         $get() {
-          return Promise.resolve(['todo 1', 'todo 2'])
+          return Promise.resolve([
+            {
+              userId: 12,
+              title: 'todo 1'
+            },
+            {
+              userId: 13,
+              title: 'todo 2'
+            }
+          ])
         }
       }
     }
@@ -350,7 +359,8 @@ describe('loadTasks action', () => {
     jest.spyOn(context.$axios, '$get')
 
     const loadTasksPromise = actions.loadTasks.bind(context)(store, {
-      apiOrigin: 'origin'
+      apiOrigin: 'origin',
+      userId: 12
     })
     expect(store.commit).toHaveBeenCalledTimes(1)
     expect(store.commit).toHaveBeenCalledWith('startLoadingTasks')
@@ -360,7 +370,12 @@ describe('loadTasks action', () => {
     return loadTasksPromise.then(() => {
       expect(store.commit).toHaveBeenCalledTimes(2)
       expect(store.commit).toHaveBeenCalledWith('setTasks', {
-        tasks: ['todo 1', 'todo 2']
+        tasks: [
+          {
+            userId: 12,
+            title: 'todo 1'
+          }
+        ]
       })
       expect(context.$axios.$get).toHaveBeenCalledTimes(1)
     })

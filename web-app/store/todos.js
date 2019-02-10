@@ -30,6 +30,11 @@ export const mutations = {
     state.loading = false
     state.newTask = task
   },
+  startDeletingTask(state, { taskId }) {
+    state.loadingError = null
+    state.loading = false
+    state.tasks = state.tasks.filter(task => task.id !== taskId)
+  },
   addingTaskConfirmation(state, { task }) {
     state.tasks.unshift({
       ...task,
@@ -133,12 +138,24 @@ export const actions = {
       })
     }
   },
-  async loadTasks({ commit }, { apiOrigin }) {
+  async deleteTask({ commit, state }, { apiOrigin, taskId }) {
+    commit('startDeletingTask', { taskId })
+
+    try {
+      await this.$axios.$delete(`${apiOrigin}/todos/${taskId}`)
+    } catch (err) {
+      commit('setLoadingError', {
+        error:
+          'Something went wrong while deleting the task. Please refresh the page :/'
+      })
+    }
+  },
+  async loadTasks({ commit }, { apiOrigin, userId }) {
     commit('startLoadingTasks')
 
     try {
       const todos = await this.$axios.$get(`${apiOrigin}/todos`)
-      commit('setTasks', { tasks: todos })
+      commit('setTasks', { tasks: todos.filter(t => t.userId === userId) })
     } catch (err) {
       commit('setLoadingError', {
         error:

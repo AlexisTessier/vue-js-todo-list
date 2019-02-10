@@ -42,13 +42,3 @@ cd web-app
 yarn install (if necessary)
 yarn run dev
 ```
-
-## Scripts
-
-### Run tests and linter
-
-TO DO
-
-### Build the statics
-
-TO DO
