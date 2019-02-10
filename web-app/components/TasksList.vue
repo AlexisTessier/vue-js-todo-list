@@ -13,6 +13,7 @@
               :autofocus="item.task.autofocus"
               :updating-error="item.task.updatingError"
               @task-update="taskUpdate(item.task.id, $event)"
+              @delete-btn-click="taskDelete(item.task.id)"
             />
           </v-list-tile-content>
         </v-list-tile>
@@ -66,6 +67,9 @@ export default {
   methods: {
     taskUpdate(taskId, update) {
       this.$emit('task-update', { taskId, update })
+    },
+    taskDelete(taskId) {
+      this.$emit('task-delete', { taskId })
     }
   }
 }

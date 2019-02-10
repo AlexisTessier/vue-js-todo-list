@@ -24,6 +24,7 @@
           v-if="displayTasks"
           :tasks="tasks"
           @task-update="onTaskUpdate($event)"
+          @task-delete="onTaskDelete($event)"
         />
       </v-container>
       <float-button
@@ -146,11 +147,19 @@ export default {
           update
         )
       }
+    },
+    onTaskDelete({ taskId }) {
+      const store = this.$store
+      store.dispatch('todos/deleteTask', {
+        apiOrigin: apiOrigin(store),
+        taskId
+      })
     }
   },
   async fetch({ store }) {
     await store.dispatch('todos/loadTasks', {
-      apiOrigin: apiOrigin(store)
+      apiOrigin: apiOrigin(store),
+      userId: 1
     })
   }
 }

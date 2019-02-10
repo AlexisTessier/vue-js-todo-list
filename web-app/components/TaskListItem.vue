@@ -23,28 +23,48 @@
     <div v-if="updatingError" class="error--text">
       {{ updatingError }}
     </div>
-    <v-checkbox
-      v-model="completedModel"
-      :disabled="updating"
-      :color="color"
-      :label="status"
-    >
-      <span slot="label" :class="color+'--text status'">
-        {{ status }}
-      </span>
-    </v-checkbox>
+    <div v-if="editable" class="actions">
+      <v-checkbox
+        v-model="completedModel"
+        :disabled="updating"
+        :color="color"
+        :label="status"
+      >
+        <span slot="label" :class="color+'--text status'">
+          {{ status }}
+        </span>
+      </v-checkbox>
+      <v-tooltip
+        left
+        class="delete-btn"
+      >
+        <v-btn
+          slot="activator"
+          icon
+          @click="$emit('delete-btn-click')"
+        >
+          <v-icon>delete</v-icon>
+        </v-btn>
+        <span>Delete the task</span>
+      </v-tooltip>
+    </div>
   </div>
 </template>
 
 <style>
 .task {
-  display: flex;
   width: 100%;
+}
+
+.task,
+.actions {
+  display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.task > * {
+.task > *,
+.actions > * {
   display: inline-block !important;
   flex: none !important;
 }
@@ -66,7 +86,12 @@
 }
 
 .status {
-  width: 4em;
+  width: 2.5em;
+}
+
+.delete-btn {
+  position: relative;
+  top: -8px;
 }
 
 .loader,
