@@ -3,8 +3,8 @@
 + list all tasks OK
 + nice display OK
 + set a task as done OK
++ edit a task OK
 + add a task
-+ edit a task
 + remove a task
 + filter by title
 + filter by status
@@ -12,8 +12,7 @@
 
 ## technical requirements
 
-+ git history
-+ build et deploy
++ build and deploy
 + send it
 
 ## resources
