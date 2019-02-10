@@ -1,10 +1,18 @@
 <template>
   <div :class="status" class="task">
-    <v-list-tile-title
-      class="item-title"
-    >
-      {{ title }}
-    </v-list-tile-title>
+    <span class="item-title">
+      <v-form
+        @submit.prevent="disableFocus()"
+      >
+        <v-text-field
+          v-model="editedTitle"
+          :counter="editedTitleCounter"
+          :label="editedTitleLabel"
+          @blur.prevent="disableEditMode()"
+          @focus.prevent="enableEditMode()"
+        />
+      </v-form>
+    </span>
     <v-progress-circular
       v-if="updating"
       indeterminate
@@ -31,6 +39,20 @@
   display: flex;
   width: 100%;
   align-items: center;
+  justify-content: space-between;
+}
+
+.task > * {
+  display: inline-block !important;
+  flex: none !important;
+}
+
+.item-title {
+  width: 50%;
+}
+
+.item-title:hover {
+  cursor: pointer;
 }
 
 .done {
@@ -80,6 +102,11 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      editingTitle: false
+    }
+  },
   computed: {
     color() {
       return this.completed ? 'green' : 'blue'
@@ -95,6 +122,36 @@ export default {
         this.onTaskUpdate({
           completed: value
         })
+      }
+    },
+    editedTitle: {
+      get() {
+        return this.title
+      },
+      set(value) {
+        this.onTaskUpdate({
+          title: value
+        })
+      }
+    },
+    editedTitleCounter() {
+      return this.editingTitle ? 144 : undefined
+    },
+    editedTitleLabel() {
+      return this.editingTitle ? 'Task title' : undefined
+    }
+  },
+  methods: {
+    enableEditMode() {
+      this.editingTitle = true
+    },
+    disableEditMode() {
+      this.editingTitle = false
+    },
+    disableFocus() {
+      const active = window.document.activeElement
+      if (active && typeof active.blur === 'function') {
+        active.blur()
       }
     }
   }

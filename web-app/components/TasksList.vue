@@ -1,34 +1,27 @@
 <template>
   <v-list class="list">
     <template v-for="(item, index) in items">
-      <v-divider
-        v-if="item.divider"
-        :key="index"
-        class="divider"
-      />
-
-      <v-list-tile
-        v-else
-        :key="index"
-        class="item"
-      >
-        <v-list-tile-content class="item-content">
-          <task-list-item
-            :title="item.title"
-            :completed="item.completed"
-            :updating="item.updating"
-            :updating-error="item.updatingError"
-            :on-task-update="item.onTaskUpdate"
-          />
-        </v-list-tile-content>
-      </v-list-tile>
+      <div :key="index">
+        <v-divider class="divider" />
+        <v-list-tile class="item">
+          <v-list-tile-content class="item-content">
+            <task-list-item
+              :title="item.content.title"
+              :completed="item.content.completed"
+              :updating="item.content.updating"
+              :updating-error="item.content.updatingError"
+              :on-task-update="item.onTaskUpdate"
+            />
+          </v-list-tile-content>
+        </v-list-tile>
+      </div>
     </template>
   </v-list>
 </template>
 
 <style>
 .list {
-  padding: 0;
+  padding: 0 !important;
 }
 
 .divider {
@@ -65,19 +58,13 @@ export default {
   computed: {
     items() {
       const list = this
-      const items = []
-      list.tasks.forEach((task, i) => {
-        if (i > 0) {
-          items.push({ divider: true })
-        }
-        items.push({
-          ...task,
-          onTaskUpdate(update) {
-            list.onTaskUpdate(task.id, update)
-          }
-        })
-      })
-      return items
+      return list.tasks.map((task, i) => ({
+        divider: i > 0,
+        onTaskUpdate(update) {
+          list.onTaskUpdate(task.id, update)
+        },
+        content: task
+      }))
     }
   }
 }

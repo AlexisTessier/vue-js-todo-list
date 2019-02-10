@@ -24,6 +24,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { debounce } from 'debounce'
 import ToolBar from '~/components/ToolBar.vue'
 import TasksList from '~/components/TasksList.vue'
 import FloatButton from '~/components/FloatButton.vue'
@@ -46,7 +47,12 @@ export default {
   data() {
     return {
       addButtonColor,
-      addTaskLabel
+      addTaskLabel,
+      lastTaskUpdate: {
+        taskId: null,
+        updateKeys: ''
+      },
+      debouncedUpdateTask: null
     }
   },
   computed: {
@@ -63,13 +69,55 @@ export default {
     }
   },
   methods: {
-    onTaskUpdate(taskId, update) {
-      const store = this.$store
+    immediateUpdateTask(store, taskId, update) {
+      this.lastTaskUpdate = {
+        taskId: null,
+        updateKeys: ''
+      }
       store.dispatch('todos/updateTask', {
         apiOrigin: apiOrigin(store),
         taskId,
         update
       })
+    },
+    onTaskUpdate(taskId, update) {
+      if (this.debouncedUpdateTask === null) {
+        this.debouncedUpdateTask = debounce(
+          (immediateUpdateTask, store, taskId, update) => {
+            immediateUpdateTask(store, taskId, update)
+          },
+          800
+        )
+      }
+
+      const {
+        taskId: lastTaskId,
+        updateKeys: lastTaskUpdateKeys
+      } = this.lastTaskUpdate
+
+      const updateKeys = Object.keys(update)
+        .sort()
+        .join('/')
+
+      this.lastTaskUpdate = {
+        taskId,
+        updateKeys
+      }
+
+      if (updateKeys === 'completed' && lastTaskId === null) {
+        this.immediateUpdateTask(this.$store, taskId, update)
+      } else {
+        if (taskId !== lastTaskId || updateKeys !== lastTaskUpdateKeys) {
+          this.debouncedUpdateTask.flush()
+        }
+
+        this.debouncedUpdateTask(
+          this.immediateUpdateTask,
+          this.$store,
+          taskId,
+          update
+        )
+      }
     }
   },
   async fetch({ store }) {
